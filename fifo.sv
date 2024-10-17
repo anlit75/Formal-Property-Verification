@@ -31,7 +31,7 @@ module fifo #(
             write_ptr <= 0;
         end else if (wr_en && !full) begin
             mem[write_ptr] <= din;
-            write_ptr <= (write_ptr + 1) % FIFO_DEPTH;
+            write_ptr[i] <= (write_ptr[i] == FIFO_DEPTH-1) ? 0 : (write_ptr[i] + 1);
         end
     end
 
@@ -40,7 +40,7 @@ module fifo #(
         if (!rst_n) begin
             read_ptr <= 0;
         end else if (rd_en && !empty) begin
-            read_ptr <= (read_ptr + 1) % FIFO_DEPTH;
+            read_ptr[i] <= (read_ptr[i] == FIFO_DEPTH-1) ? 0 : (read_ptr[i] + 1);
         end
     end
 
