@@ -1,15 +1,15 @@
 // ===============================================================================
 // Module Name:    Comparator
 // Project Name:   Formal Property Verification
-// Description: 
+// Description:
 //     This module implements a comparator that sorts multiple input data
-//     and outputs either the smallest or largest value based on the selected 
-//     mode. It utilizes an insertion sort algorithm to sort the data 
-//     inputs. The sorting is triggered by releasing the asynchronous reset 
-//     (RST_N), and both the output and the SORT_DONE flag are valid for 
-//     only one clock cycle (CLK). The DIN input must be stable and prepared 
+//     and outputs either the smallest or largest value based on the selected
+//     mode. It utilizes an insertion sort algorithm to sort the data
+//     inputs. The sorting is triggered by releasing the asynchronous reset
+//     (RST_N), and both the output and the SORT_DONE flag are valid for
+//     only one clock cycle (CLK). The DIN input must be stable and prepared
 //     before releasing RST_N for correct operation.
-// 
+//
 // Port Description:
 //     Name           Dir   Width                         Description
 //     ---------------------------------------------------------------------------
@@ -24,13 +24,13 @@
 //     DATA_WIDTH     - Configurable width of each data input (default is 16 bits)
 //     NUM_INPUTS     - Configurable number of input data (default is 8 inputs)
 //
-// Timing Diagram: Arrow (⭣) indicates the sample timing for the corresponding signal. 
+// Timing Diagram: Arrow (⭣) indicates the sample timing for the corresponding signal.
 //      CLK       ___     ___     ___     ___     ___     ___     ___     ___
 //             __/   \___/   \___/   \___/   \___/   \___/   \___/   \___/   \___
 //               |       |       |       |       |       |       |       |       |
 //               |       |       ⭣       |       |       |       |       ⭣       |
 //      RST_N                 ___________________                     ___________
-//             ______________/                   \___________________/    
+//             ______________/                   \___________________/
 //               |       |       |       |       |       |       |       |       |
 //               |       |       ⭣       |       |       |       |       ⭣       |
 //      MODE      _______________________
@@ -61,18 +61,18 @@
 //     6. Example:
 //        - Provide data through DIN and check SORT_DONE to determine when to read DOUT.
 //        - Set MODE = 0 to get the smallest value, or MODE = 1 to get the largest value.
-//        - Set DIN = {16'd45, 16'd3, 16'd29, 16'd88}, 
+//        - Set DIN = {16'd45, 16'd3, 16'd29, 16'd88},
 //          MODE = 0 will find the smallest value (DOUT = 16'd3).
 //          MODE = 1 will find the largest value (DOUT = 16'd88).
-// 
-// Dependencies: 
+//
+// Dependencies:
 //     None
-// 
+//
 // Author:         Ting-An Cheng
 // Date:           2024-10-19
 // Last Modified:  2024-10-19
 // Version:        1.1
-// 
+//
 // Revision History:
 //     2024-10-19 - 1.0 - Initial release
 //     2024-10-19 - 1.1 - Modified the output timing

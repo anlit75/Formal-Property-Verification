@@ -1,13 +1,13 @@
 // ===============================================================================
 // Module Name:    FIFO
 // Project Name:   Formal Property Verification
-// Description: 
+// Description:
 //     This module implements a simple First-In-First-Out (FIFO)
-//     buffer. It provides basic FIFO functionality with 
-//     configurable data width and depth, using write and read 
+//     buffer. It provides basic FIFO functionality with
+//     configurable data width and depth, using write and read
 //     enable signals to control data flow. The module includes
 //     FULL and EMPTY indicators to signal the status of the FIFO.
-// 
+//
 // Port Description:
 //     Name           Dir   Width              Description
 //     ---------------------------------------------------------------------------
@@ -41,14 +41,14 @@
 //        - Set RD_EN = 1, WR_EN = 0 to read the next available data from DOUT.
 //        - If set WR_EN = 1, RD_EN = 1, the FIFO will do nothing.
 //
-// Dependencies: 
+// Dependencies:
 //     None
-// 
+//
 // Author:         Ting-An Cheng
 // Date:           2024-10-18
 // Last Modified:  2024-10-19
 // Version:        1.1
-// 
+//
 // Revision History:
 //     2024-10-18 - 1.0 - Initial release
 //     2024-10-19 - 1.1 - Modified output port to be registered
