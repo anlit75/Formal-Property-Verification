@@ -6,4 +6,4 @@
 - [MULTI_FIFOS.sv](./MULTI_FIFOS.sv)
 
 ### 2. Comparator
-- [Comparator.sv ( Insertion sort )](./Comparator.sv)
+- [Comparator.sv ( Insertion Sort )](./Comparator.sv)

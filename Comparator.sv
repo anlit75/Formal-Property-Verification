@@ -24,7 +24,7 @@
 //     DATA_WIDTH     - Configurable width of each data input (default is 16 bits)
 //     NUM_INPUTS     - Configurable number of input data (default is 8 inputs)
 //
-// Timing diagram:
+// Timing Diagram: Arrow (⭣) indicates the sample timing for the corresponding signal. 
 //      CLK       ___     ___     ___     ___     ___     ___     ___     ___
 //             __/   \___/   \___/   \___/   \___/   \___/   \___/   \___/   \___
 //               |       |       |       |       |       |       |       |       |
