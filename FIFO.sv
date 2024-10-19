@@ -10,7 +10,7 @@
 // 
 // Port Description:
 //     Name           Dir   Width              Description
-//     -------------------------------------------------------------
+//     ---------------------------------------------------------------------------
 //     CLK            In    1                  System clock input
 //     RST_N          In    1                  Asynchronous reset
 //     WR_EN          In    1                  Write enable; when high, data is written to FIFO

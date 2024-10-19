@@ -54,11 +54,11 @@ module MULTI_FIFOS #(
     parameter FIFO_DEPTH = 16,                      // FIFO depth
     parameter NUM_FIFOS = 4                         // FIFO number
 )(
-    input wire CLK,
-    input wire RST_N,
-    input wire [NUM_FIFOS-1:0] WR_EN,               // Write enable signal
-    input wire [NUM_FIFOS-1:0] RD_EN,               // Read enable signal
-    input wire [NUM_FIFOS*DATA_WIDTH-1:0] DIN,      // Write data
+    input  wire CLK,
+    input  wire RST_N,
+    input  wire [NUM_FIFOS-1:0] WR_EN,               // Write enable signal
+    input  wire [NUM_FIFOS-1:0] RD_EN,               // Read enable signal
+    input  wire [NUM_FIFOS*DATA_WIDTH-1:0] DIN,      // Write data
     output wire [NUM_FIFOS*DATA_WIDTH-1:0] DOUT,    // Read data
     output wire [NUM_FIFOS-1:0] FULL,               // FIFO FULL indicators
     output wire [NUM_FIFOS-1:0] EMPTY               // FIFO EMPTY indicators
