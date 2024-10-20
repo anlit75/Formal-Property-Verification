@@ -2,11 +2,12 @@
 // Module Name:    FIFO
 // Project Name:   Formal Property Verification
 // Description:
-//     This module implements a simple First-In-First-Out (FIFO)
-//     buffer. It provides basic FIFO functionality with
-//     configurable data width and depth, using write and read
-//     enable signals to control data flow. The module includes
-//     FULL and EMPTY indicators to signal the status of the FIFO.
+//     This module implements a simple First-In-First-Out (FIFO) buffer.
+//     It provides basic FIFO functionality with configurable data width and depth,
+//     using write and read enable signals to control data flow. The module
+//     includes FULL and EMPTY indicators to signal the status of the FIFO.
+//     This implementation ensures stable output and does not support
+//     simultaneous read and write operations.
 //
 // Port Description:
 //     Name           Dir   Width              Description
@@ -29,29 +30,32 @@
 //        - The reset (RST_N) should be active low to initialize the FIFO pointers and status flags.
 //     2. Configure the module by setting DATA_WIDTH and FIFO_DEPTH as required.
 //     3. To write data to the FIFO:
-//        - Ensure WR_EN is set to high, RD_EN is set to low, and provide data on DIN.
+//        - Set WR_EN to high and RD_EN to low, then provide data on DIN.
 //        - The FIFO will write data only if it is not FULL.
 //        - Check the FULL signal to avoid overwriting data.
 //     4. To read data from the FIFO:
-//        - Ensure RD_EN is set to high, WD_EN is set to low, and read data from DOUT.
+//        - Set RD_EN to high and WR_EN to low to read data from DOUT.
 //        - The FIFO will provide data only if it is not EMPTY.
+//        - The data on DOUT will remain stable until the next read operation or until the FIFO becomes empty.
 //        - Check the EMPTY signal to avoid reading invalid data.
-//     5. Example:
-//        - Set WR_EN = 1, RD_EN = 0, DIN = 8'b10101010 to write data.
-//        - Set RD_EN = 1, WR_EN = 0 to read the next available data from DOUT.
-//        - If set WR_EN = 1, RD_EN = 1, the FIFO will do nothing.
+//     5. Important Notes:
+//        - This FIFO does not support simultaneous read and write operations.
+//        - If both WR_EN and RD_EN are set to 1, the FIFO will not perform any operation.
+//        - When the FIFO becomes empty, DOUT is cleared to avoid displaying invalid data.
 //
 // Dependencies:
 //     None
 //
 // Author:         Ting-An Cheng
 // Date:           2024-10-18
-// Last Modified:  2024-10-19
-// Version:        1.1
+// Last Modified:  2024-10-20
+// Version:        1.2
 //
 // Revision History:
 //     2024-10-18 - 1.0 - Initial release
 //     2024-10-19 - 1.1 - Modified output port to be registered
+//     2024-10-20 - 1.2 - Optimize FULL and EMPTY logic to reflect status faster,
+//                        and enhance DOUT stabilization
 // ===============================================================================
 
 
@@ -76,20 +80,20 @@ module FIFO #(
     reg [$clog2(FIFO_DEPTH):0] fifo_count;  // Data count
 
     // FULL indicator
-    always @(posedge CLK or negedge RST_N) begin
+    always @(*) begin
         if (!RST_N) begin
-            FULL <= 1'b0;
+            FULL = 1'b0;
         end else begin
-            FULL <= (fifo_count == FIFO_DEPTH);
+            FULL = (fifo_count == FIFO_DEPTH);
         end
     end
 
     // EMPTY indicator
-    always @(posedge CLK or negedge RST_N) begin
+    always @(*) begin
         if (!RST_N) begin
-            EMPTY <= 1'b1;
+            EMPTY = 1'b1;
         end else begin
-            EMPTY <= (fifo_count == 0);
+            EMPTY = (fifo_count == 0);
         end
     end
 
@@ -111,6 +115,8 @@ module FIFO #(
         end else if (RD_EN && !EMPTY && !WR_EN) begin
             DOUT <= mem[read_ptr];
             read_ptr <= (read_ptr == FIFO_DEPTH-1) ? 0 : (read_ptr + 1);
+        end else if (EMPTY) begin
+          	DOUT <= 0;
         end
     end
 
