@@ -20,6 +20,7 @@
 //     DOUT           Out   [DATA_WIDTH-1:0]   Data output from the FIFO
 //     FULL           Out   1                  Indicates when FIFO is full and cannot accept new data
 //     EMPTY          Out   1                  Indicates when FIFO is empty and there is no data to read
+//     ERROR_FLAGS    Out   [1:0]              Error flags: [1] Write to full, [0] Read from empty
 //
 // Parameters:
 //     DATA_WIDTH     - Configurable width of the data bus (default is 8 bits)
@@ -33,15 +34,18 @@
 //        - Set WR_EN to high and RD_EN to low, then provide data on DIN.
 //        - The FIFO will write data only if it is not FULL.
 //        - Check the FULL signal to avoid overwriting data.
+//        - The ERROR_FLAGS[1] will assert if you try to write to a FULL FIFO.
 //     4. To read data from the FIFO:
 //        - Set RD_EN to high and WR_EN to low to read data from DOUT.
 //        - The FIFO will provide data only if it is not EMPTY.
 //        - The data on DOUT will remain stable until the next read operation or until the FIFO becomes empty.
 //        - Check the EMPTY signal to avoid reading invalid data.
+//        - The ERROR_FLAGS[0] will assert if you try to read from an EMPTY FIFO.
 //     5. Important Notes:
 //        - This FIFO does not support simultaneous read and write operations.
 //        - If both WR_EN and RD_EN are set to 1, the FIFO will not perform any operation.
 //        - When the FIFO becomes empty, DOUT is cleared to avoid displaying invalid data.
+//        - ERROR_FLAGS will clear on the next clock cycle if the error condition is resolved.
 //
 // Dependencies:
 //     None
@@ -49,13 +53,14 @@
 // Author:         Ting-An Cheng
 // Date:           2024-10-18
 // Last Modified:  2024-10-20
-// Version:        1.2
+// Version:        1.3
 //
 // Revision History:
 //     2024-10-18 - 1.0 - Initial release
 //     2024-10-19 - 1.1 - Modified output port to be registered
 //     2024-10-20 - 1.2 - Optimize FULL and EMPTY logic to reflect status faster,
 //                        and enhance DOUT stabilization
+//     2024-10-20 - 1.3 - Add error flags to indicate write to full and read from empty
 // ===============================================================================
 
 
@@ -70,7 +75,8 @@ module FIFO #(
     input  wire [DATA_WIDTH-1:0] DIN,   // Write data
     output reg  [DATA_WIDTH-1:0] DOUT,  // Read data
     output reg  FULL,                   // FIFO FULL indicator
-    output reg  EMPTY                   // FIFO EMPTY indicator
+    output reg  EMPTY,                  // FIFO EMPTY indicator
+    output reg  [1:0] ERROR_FLAGS       // Error flags: [1] Write to full, [0] Read from empty
 );
 
     // Declare FIFO storage array and pointers
@@ -130,6 +136,16 @@ module FIFO #(
                 2'b01: if (!EMPTY) fifo_count <= fifo_count - 1;    // Read
                 default: ;                                          // Default: no change
             endcase
+        end
+    end
+
+    // Error flags logic
+    always @(posedge CLK or negedge RST_N) begin
+        if (!RST_N) begin
+            ERROR_FLAGS <= 2'b00;
+        end else begin
+            ERROR_FLAGS[1] <= WR_EN && FULL && !RD_EN;              // Write to full error
+            ERROR_FLAGS[0] <= RD_EN && EMPTY && !WR_EN;             // Read from empty error
         end
     end
 
